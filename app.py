@@ -59,7 +59,7 @@ N = len(addresses)
 
 for i, adr in enumerate(addresses):
     for j, adr2 in enumerate(addresses):
-        print(f"\rCreating graph... ({i*N + j} of {N*2})", end='')
+        print(f"\rCreating graph... ({i*N + j+1} of {N*N})", end='')
         if i == j:
             continue
         if adr in graph[adr2] or adr2 in graph[adr]:

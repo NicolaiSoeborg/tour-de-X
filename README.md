@@ -20,3 +20,6 @@ Et Google Chrome browser vil åbne og hente offentlig transport tider fra Google
 Når dette er færdigt (tager ca: `antal adresser x 2 sekunder`) findes den bedste sti mellem alle adresserne (via 2-OPT TSP).
 
 Til sidst printes den endelige liste.
+
+# Example
+![](example.gif)
