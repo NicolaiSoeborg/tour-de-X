@@ -1,5 +1,6 @@
 from collections import defaultdict
 from urllib.parse import quote_plus
+from sys import platform
 from time import sleep
 import numpy as np
 from selenium import webdriver
@@ -26,7 +27,8 @@ start_idx = int(input("\nWhich address should the tour start at? ")) - 1  # beca
 assert 0 <= start_idx < len(addresses), 'Oops, too high or low number?'
 
 URL = "https://www.google.dk/maps/dir/{a}/{b}/"
-driver = webdriver.Chrome(executable_path='./chromedriver-linux')
+ext = {'windows': 'exe'}.get(platform, platform)
+driver = webdriver.Chrome(executable_path=f'./chromedriver.{ext}')
 
 def time_str(string):
     """ Super error prone function, deal with it """
@@ -38,7 +40,6 @@ def time_str(string):
 
 def get_time_between(a, b):
     driver.get(URL.format(a=quote_plus(a, safe=","), b=quote_plus(b, safe=",")))
-    print("STEP 0")
     while True:
         try:
             sleep(1)
@@ -54,9 +55,11 @@ def get_time_between(a, b):
         except WebDriverException: pass
 
 graph = defaultdict(dict)
+N = len(addresses)
 
 for i, adr in enumerate(addresses):
     for j, adr2 in enumerate(addresses):
+        print(f"\rCreating graph... ({i*N + j} of {N*2})", end='')
         if i == j:
             continue
         if adr in graph[adr2] or adr2 in graph[adr]:
@@ -69,7 +72,7 @@ for i, adr in enumerate(addresses):
 
 driver.get(f'https://xn--sb-lka.org/?tdr={len(addresses)}')
 
-print("Graph created.\nFinding fastest route... (you can close the browser)")
+print("\n... Graph created.\n\nFinding fastest route... (you can close the browser)")
 
 # Insert fake node:
 start_node = addresses[start_idx]
@@ -80,7 +83,6 @@ for node in graph.keys():
     graph[node]['fake'] = 1
 
 # Create distance matrix:
-N = len(addresses)
 M = np.ndarray(shape=(N,N), dtype=float)
 
 for i, adr in enumerate(addresses):
@@ -93,11 +95,10 @@ for i, adr in enumerate(addresses):
 tsp = TSP()
 tsp.read_mat(M)
 
-print("Solving using 2-opt heuristic for TSP")
+print("Solving using 2-opt heuristic for TSP:")
 two_opt = TwoOpt_solver(initial_tour='NN', iter_num=100)
 two_opt_tour = tsp.get_approx_solution(two_opt)
 
-print("Best tour:")
 for idx in range(len(two_opt_tour)-1):
     a = addresses[two_opt_tour[idx]]
     b = addresses[two_opt_tour[idx+1]]
