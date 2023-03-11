@@ -1,4 +1,7 @@
+# THIS PROJECT HAS BEEN DEPRECATED AND PROBABLY DOESN'T WORK ANYMORE
+
 # tour-de-X
+
 Nem planlægning af Tour-de-X
 
 Åben `app.py` i din ynglings editor og ændre:
@@ -32,4 +35,5 @@ Til sidst printes den endelige liste.
 
 
 # Example
-![](example.gif)
+
+![gif of scraping Google Maps for timespans](example.gif)
